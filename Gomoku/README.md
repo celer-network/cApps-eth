@@ -1,6 +1,6 @@
 Gomoku on-chain contract that impletement cOS API so that it can work with cGomoku App running on Celer Network.
 
-### Public functions
+#### Public functions - on-chain game API
 
 ```solidity
 /**
@@ -9,33 +9,6 @@ Gomoku on-chain contract that impletement cOS API so that it can work with cGomo
 @param _y is y coordinate on the board
 */
 function placeStone(uint8 _x, uint8 _y)
-
-/**
-@notice Submit off-chain game state proof (cOS API)
-@param _stateproof is serialized off-chain state
-@param _signatures is serialized signatures
-*/
-function intendSettle(bytes _stateproof, bytes _signatures)
-
-/**
-@notice Confirm off-chain state is settled and update on-chain states (cOS API)
-*/
-function confirmSettle()
-
-/**
-@notice Check if the game is finalized (cOS API)
-@param _query is query data (empty in Gomoku game) 
-@param _timeout is deadline (block number) for the game to be finalized
-@return true if game is finalized before given timeout
-*/
-function isFinalized(bytes _query, uint _timeout) public view returns (bool)
-
-/**
-@notice Query the game result (cOS API)
-@param _query is query data (player address in Gomoku game) 
-@return true if given player wins
-*/
-function queryResult(bytes _query) public view returns (bool)
 
 /**
 @notice Update game state in case of on-chain move timeout
@@ -48,6 +21,38 @@ function finalizeOnMoveTimeout() public returns (bool)
 @return serialized game state
 */
 function queryState() public view returns (bytes)
+
+```
+
+#### Public functions - cOS required API
+
+```solidity
+/**
+@notice Submit off-chain game state proof
+@param _stateproof is serialized off-chain state
+@param _signatures is serialized signatures
+*/
+function intendSettle(bytes _stateproof, bytes _signatures)
+
+/**
+@notice Confirm off-chain state is settled and update on-chain states
+*/
+function confirmSettle()
+
+/**
+@notice Check if the game is finalized
+@param _query is query data (empty in Gomoku game) 
+@param _timeout is deadline (block number) for the game to be finalized
+@return true if game is finalized before given timeout
+*/
+function isFinalized(bytes _query, uint _timeout) public view returns (bool)
+
+/**
+@notice Query the game result
+@param _query is query data (player address in Gomoku game) 
+@return true if given player wins
+*/
+function queryResult(bytes _query) public view returns (bool)
 
 /**
 @notice Get the deadline of off-chain state settle
