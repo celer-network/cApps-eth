@@ -46,7 +46,7 @@ function getSettleTime() public view returns (uint)
 @notice Update game state in case of on-chain move timeout
 @return true if the game is over due to on-chain move timeout
 */
-function isTimeout() public returns (bool)
+function finalizeOnMoveTimeout() public returns (bool)
 
 /**
 @notice Place a stone on the board
