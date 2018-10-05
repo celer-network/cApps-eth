@@ -56,7 +56,7 @@ contract Gomoku {
         max_stone_onchain = _max_stone_onchain;
         nonce = 0;
         winner = 0;
-        turn = 1;
+        turn = 1; // player1 moves first
         stone_num = 0;
         stone_num_onchain = 0;
         game_phase = GamePhase.start;
@@ -142,7 +142,7 @@ contract Gomoku {
     @notice Update game state in case of on-chain move timeout
     @return true if the game is over due to on-chain move timeout
     */
-    function isTimeout() public returns (bool) {
+    function finalizeOnMoveTimeout() public returns (bool) {
         if (game_phase == GamePhase.play && block.number > move_deadline) {
             if (turn == 1) {
                 winGame(2);
