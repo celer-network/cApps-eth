@@ -1,4 +1,4 @@
-Gomoku on-chain contract that impletement cOS API so that it can work with cGomoku App running on Celer Network.
+cGomoku on-chain contract that impletements Celer Network cOS API.
 
 #### Public functions - on-chain game API
 
