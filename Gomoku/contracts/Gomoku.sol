@@ -36,6 +36,8 @@ contract Gomoku {
     @param _player2 is address of player2
     @param _move_timeout is timeout to make an on-chain move
     @param _settle_timeout is timeout to submit state proof during settle phase
+    @param _min_stone_offchain is minimal number of stones before go onchain
+    @param _max_stone_onchain is maximal number of stones after go onchain
     */
     constructor(
         address _player1, 
@@ -61,7 +63,7 @@ contract Gomoku {
     }
 
     /**
-    @notice Check if the game is finalized (standard API)
+    @notice Check if the game is finalized (cOS API)
     @param _query is query data (empty in Gomoku game) 
     @param _timeout is deadline (block number) for the game to be finalized
     @return true if game is finalized before given timeout
@@ -71,7 +73,7 @@ contract Gomoku {
     }
 
     /**
-    @notice Query the game result (standard API)
+    @notice Query the game result (cOS API)
     @param _query is query data (player address in Gomoku game) 
     @return true if given player wins
     */
@@ -81,8 +83,8 @@ contract Gomoku {
     }
 
     /**
-    @notice Submit off-chain game state co-signed by both players (standard API)
-    @param _stateproof is serialized state
+    @notice Submit off-chain game state proof (cOS API)
+    @param _stateproof is serialized off-chain state
     @param _signatures is serialized signatures
     */
     function intendSettle(bytes _stateproof, bytes _signatures) public {
@@ -100,7 +102,7 @@ contract Gomoku {
     }
 
     /**
-    @notice Confirm off-chain game state is settled (standard API)
+    @notice Confirm off-chain state is settled and update on-chain states (cOS API)
     */
     function confirmSettle() public {
         if (game_phase == GamePhase.settle && block.number > settle_deadline) {
@@ -137,7 +139,7 @@ contract Gomoku {
     }
 
     /**
-    @notice Check if the game is over due to on-chain move timeout
+    @notice Update game state in case of on-chain move timeout
     @return true if the game is over due to on-chain move timeout
     */
     function isTimeout() public returns (bool) {
