@@ -63,98 +63,6 @@ contract Gomoku {
     }
 
     /**
-    @notice Check if the game is finalized (cOS API)
-    @param _query is query data (empty in Gomoku game) 
-    @param _timeout is deadline (block number) for the game to be finalized
-    @return true if game is finalized before given timeout
-    */
-    function isFinalized(bytes _query, uint _timeout) public view returns (bool) {
-        return game_phase == GamePhase.over && finalized_time <= _timeout;
-    }
-
-    /**
-    @notice Query the game result (cOS API)
-    @param _query is query data (player address in Gomoku game) 
-    @return true if given player wins
-    */
-    function queryResult(bytes _query) public view returns (bool) {
-        require(_query.length == 1);
-        return winner == uint8(_query[0]);
-    }
-
-    /**
-    @notice Submit off-chain game state proof (cOS API)
-    @param _stateproof is serialized off-chain state
-    @param _signatures is serialized signatures
-    */
-    function intendSettle(bytes _stateproof, bytes _signatures) public {
-        require(game_phase != GamePhase.over);
-        pbRpcMultiSignature.Data memory sigs = pbRpcMultiSignature.decode(_signatures);
-        require(checkSignature(_stateproof, sigs), "invalid signatures");
-        if(game_phase == GamePhase.settle) {
-            require(block.number <= settle_deadline);
-        }
-        loadGameState(_stateproof); 
-        if(game_phase == GamePhase.start || game_phase == GamePhase.play) {
-            game_phase = GamePhase.settle;
-            settle_deadline = block.number + settle_timeout;
-        }
-    }
-
-    /**
-    @notice Confirm off-chain state is settled and update on-chain states (cOS API)
-    */
-    function confirmSettle() public {
-        if (game_phase == GamePhase.settle && block.number >= settle_deadline) {
-            game_phase = GamePhase.play; 
-            move_deadline = block.number + move_timeout;
-            emit ConfirmSettle();
-        }
-    }
-
-    /**
-    @notice Query game state
-    @return serialized game state
-    */
-    function queryState() public view returns (bytes) {
-        bytes memory state = new bytes(227);
-        state[0] = byte(winner);
-        state[1] = byte(turn);
-        uint i = 2;
-        for (uint8 x = 0; x < board_dimmension; x++) {
-            for (uint8 y = 0; y < board_dimmension; y++) {
-                state[i] = byte(board[x][y]);
-                i++;
-            }
-        }
-        return state;
-    }
-
-    /**
-    @notice Get the deadline of off-chain state settle
-    @return block number of the settle deadline
-    */
-    function getSettleTime() public view returns (uint) {
-        return settle_deadline;
-    }
-
-    /**
-    @notice Update game state in case of on-chain move timeout
-    @return true if the game is over due to on-chain move timeout
-    */
-    function finalizeOnMoveTimeout() public returns (bool) {
-        if (game_phase == GamePhase.play && block.number > move_deadline) {
-            if (turn == 1) {
-                winGame(2);
-            } else if (turn == 2) {
-                winGame(1);
-            }
-            return true;
-        }
-        return false;
-    }
-
-    /**
     @notice Place a stone on the board
     @param _x is x coordinate on the board
     @param _y is y coordinate on the board
@@ -193,6 +101,98 @@ contract Gomoku {
             move_deadline = block.number + move_timeout;
             game_phase = GamePhase.play;
         }
+    }
+
+    /**
+    @notice Submit off-chain game state proof (cOS API)
+    @param _stateproof is serialized off-chain state
+    @param _signatures is serialized signatures
+    */
+    function intendSettle(bytes _stateproof, bytes _signatures) public {
+        require(game_phase != GamePhase.over);
+        pbRpcMultiSignature.Data memory sigs = pbRpcMultiSignature.decode(_signatures);
+        require(checkSignature(_stateproof, sigs), "invalid signatures");
+        if(game_phase == GamePhase.settle) {
+            require(block.number <= settle_deadline);
+        }
+        loadGameState(_stateproof); 
+        if(game_phase == GamePhase.start || game_phase == GamePhase.play) {
+            game_phase = GamePhase.settle;
+            settle_deadline = block.number + settle_timeout;
+        }
+    }
+
+    /**
+    @notice Confirm off-chain state is settled and update on-chain states (cOS API)
+    */
+    function confirmSettle() public {
+        if (game_phase == GamePhase.settle && block.number >= settle_deadline) {
+            game_phase = GamePhase.play; 
+            move_deadline = block.number + move_timeout;
+            emit ConfirmSettle();
+        }
+    }
+
+    /**
+    @notice Check if the game is finalized (cOS API)
+    @param _query is query data (empty in Gomoku game) 
+    @param _timeout is deadline (block number) for the game to be finalized
+    @return true if game is finalized before given timeout
+    */
+    function isFinalized(bytes _query, uint _timeout) public view returns (bool) {
+        return game_phase == GamePhase.over && finalized_time <= _timeout;
+    }
+
+    /**
+    @notice Query the game result (cOS API)
+    @param _query is query data (player address in Gomoku game) 
+    @return true if given player wins
+    */
+    function queryResult(bytes _query) public view returns (bool) {
+        require(_query.length == 1);
+        return winner == uint8(_query[0]);
+    }
+
+    /**
+    @notice Update game state in case of on-chain move timeout
+    @return true if the game is over due to on-chain move timeout
+    */
+    function finalizeOnMoveTimeout() public returns (bool) {
+        if (game_phase == GamePhase.play && block.number > move_deadline) {
+            if (turn == 1) {
+                winGame(2);
+            } else if (turn == 2) {
+                winGame(1);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+    @notice Query game state
+    @return serialized game state
+    */
+    function queryState() public view returns (bytes) {
+        bytes memory state = new bytes(227);
+        state[0] = byte(winner);
+        state[1] = byte(turn);
+        uint i = 2;
+        for (uint8 x = 0; x < board_dimmension; x++) {
+            for (uint8 y = 0; y < board_dimmension; y++) {
+                state[i] = byte(board[x][y]);
+                i++;
+            }
+        }
+        return state;
+    }
+
+    /**
+    @notice Get the deadline of off-chain state settle
+    @return block number of the settle deadline
+    */
+    function getSettleTime() public view returns (uint) {
+        return settle_deadline;
     }
 
     /**

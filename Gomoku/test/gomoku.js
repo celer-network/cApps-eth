@@ -69,7 +69,7 @@ contract('Gomoku', async(accounts) => {
     const stateproof = await getStateProofBytes(12, state);
     const sigs = await getSignatures(stateproof, player1, player2);
     res = await instance.intendSettle(stateproof, sigs)
-    res = await instance.isFinalized(web3.utils.bytesToHex([2]), 10000)
+    res = await instance.isFinalized(web3.utils.bytesToHex([2]), 1000)
     assert.equal(res, true)
     res = await instance.queryResult(web3.utils.bytesToHex([2]))
     assert.equal(res, true)
@@ -136,7 +136,7 @@ contract('Gomoku', async(accounts) => {
     res = await instance.placeStone(0, 4, {from: player1})
     turn = await instance.turn()
     assert.equal(turn.valueOf(), 0)
-    res = await instance.isFinalized(web3.utils.bytesToHex([1]), 10000)
+    res = await instance.isFinalized(web3.utils.bytesToHex([1]), 1000)
     assert.equal(res, true)
     res = await instance.queryResult(web3.utils.bytesToHex([1]))
     assert.equal(res, true)
