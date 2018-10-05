@@ -32,10 +32,10 @@ contract Gomoku {
 
     /**
     @notice Gomoku constructor
-    @param _player1 is address of player1
-    @param _player2 is address of player2
+    @param _player1 is address of player1 (black)
+    @param _player2 is address of player2 (white)
     @param _move_timeout is timeout to make an on-chain move
-    @param _settle_timeout is timeout to submit state proof during settle phase
+    @param _settle_timeout is timeout to submit state proofs during settle phase
     @param _min_stone_offchain is minimal number of stones before go onchain
     @param _max_stone_onchain is maximal number of stones after go onchain
     */
