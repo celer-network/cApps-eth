@@ -32,10 +32,10 @@ contract Gomoku {
 
     /**
     @notice Gomoku constructor
-    @param _player1 is address of player1
-    @param _player2 is address of player2
+    @param _player1 is address of player1 (black)
+    @param _player2 is address of player2 (white)
     @param _move_timeout is timeout to make an on-chain move
-    @param _settle_timeout is timeout to submit state proof during settle phase
+    @param _settle_timeout is timeout to submit state proofs during settle phase
     @param _min_stone_offchain is minimal number of stones before go onchain
     @param _max_stone_onchain is maximal number of stones after go onchain
     */
@@ -104,7 +104,7 @@ contract Gomoku {
     }
 
     /**
-    @notice Submit off-chain game state proof (cOS API)
+    @notice Submit off-chain game state proof
     @param _stateproof is serialized off-chain state
     @param _signatures is serialized signatures
     */
@@ -123,7 +123,7 @@ contract Gomoku {
     }
 
     /**
-    @notice Confirm off-chain state is settled and update on-chain states (cOS API)
+    @notice Confirm off-chain state is settled and update on-chain states
     */
     function confirmSettle() public {
         if (game_phase == GamePhase.settle && block.number >= settle_deadline) {
@@ -134,7 +134,7 @@ contract Gomoku {
     }
 
     /**
-    @notice Check if the game is finalized (cOS API)
+    @notice Check if the game is finalized
     @param _query is query data (empty in Gomoku game) 
     @param _timeout is deadline (block number) for the game to be finalized
     @return true if game is finalized before given timeout
@@ -144,7 +144,7 @@ contract Gomoku {
     }
 
     /**
-    @notice Query the game result (cOS API)
+    @notice Query the game result
     @param _query is query data (player address in Gomoku game) 
     @return true if given player wins
     */
