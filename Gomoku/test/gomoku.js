@@ -61,27 +61,60 @@ contract('Gomoku', async(accounts) => {
   let turn
   let res
 
-  it('start game and set turn to player 1', async() => {
-    instance = await Gomoku.new(player1, player2, 100, 1, 8, 8)
+  it('start a new game, player 2 submits state proof and wins', async() => {
+    instance = await Gomoku.new(player1, player2, 3, 3, 5, 5)
+    var state = new Array(227)
+    state[0] = 2  // winner
+    state[1] = 0  // turn
+    const stateproof = await getStateProofBytes(12, state);
+    const sigs = await getSignatures(stateproof, player1, player2);
+    res = await instance.intendSettle(stateproof, sigs)
+    res = await instance.isFinalized(web3.utils.bytesToHex([2]), 1000)
+    assert.equal(res, true)
+    res = await instance.queryResult(web3.utils.bytesToHex([2]))
+    assert.equal(res, true)
+  });
+
+  it('start a new game, player 1 submits state proof', async() => {
+    instance = await Gomoku.new(player1, player2, 3, 0, 5, 5)
+    var state = new Array(227)
+    state[0] = 0   // winner, not specified, but the board state will indicate player 1 wins.
+    state[1] = 2   // turn
+    state[2] = 1   // (0, 0)
+    state[3] = 1   // (0, 1)
+    state[4] = 1   // (0, 2)
+    state[5] = 1   // (0, 3)
+    state[101] = 2
+    state[102] = 2
+    state[103] = 2
+    const stateproof = await getStateProofBytes(8, state);
+    const sigs = await getSignatures(stateproof, player1, player2);
+    // submit state proof
+    res = await instance.intendSettle(stateproof, sigs)
+    // read on-chain state
+    res = await instance.queryState();
+    state = web3.utils.hexToBytes(res)
+    assert.equal(state[0], 0)
+    assert.equal(state[1], 2)
+    assert.equal(state[2], 1)
+    assert.equal(state[3], 1)
+    assert.equal(state[4], 1)
+    assert.equal(state[5], 1)
+    assert.equal(state[101], 2)
+    assert.equal(state[102], 2)
+    assert.equal(state[103], 2)
+  });
+
+  it('player 2 places a stone at (3, 12) and palyer 1 takes the turn', async() => {
+    res = await instance.confirmSettle()
+    res = await instance.placeStone(3, 12, {from: player2})
     turn = await instance.turn()
     assert.equal(turn.valueOf(), 1)
   });
 
-  it('player 1 places a stone at (0, 0) and palyer 2 takes the turn', async() => {
-    res = await instance.placeStone(0, 0, {from: player1})
-    turn = await instance.turn()
-    assert.equal(turn.valueOf(), 2)
-  });
-
-  it('player 2 places a stone at (1, 0) and palyer 1 takes the turn', async() => {
-    res = await instance.placeStone(1, 0, {from: player2})
-    turn = await instance.turn()
-    assert.equal(turn.valueOf(), 1)
-  });
-
-  it('player 1 tries to place a stone at (1, 0), which is occupied by player 2', async() => {
+  it('player 2 tries to place another stone and should fail', async() => {
     try {
-      res = await instance.placeStone(1, 0, {from: player1})
+      res = await instance.placeStone(4, 12, {from: player2})
       assert.fail('expected revert not received')
     } catch (e) {
       turn = await instance.turn()
@@ -89,107 +122,23 @@ contract('Gomoku', async(accounts) => {
     }
   });
 
-  it('player 1 places a stone at (0, 1) and palyer 2 takes the turn', async() => {
-    res = await instance.placeStone(0, 1, {from: player1})
-    turn = await instance.turn()
-    assert.equal(turn.valueOf(), 2)
-  });
-
-  it('player 2 places a stone at (1, 1) and palyer 1 takes the turn', async() => {
-    res = await instance.placeStone(1, 1, {from: player2})
-    turn = await instance.turn()
-    assert.equal(turn.valueOf(), 1)
-  });
-
-  it('player 1 places a stone at (0, 2) and palyer 2 takes the turn', async() => {
-    res = await instance.placeStone(0, 2, {from: player1})
-    turn = await instance.turn()
-    assert.equal(turn.valueOf(), 2)
-  });
-
-  it('player 2 places a stone at (1, 2) and palyer 1 takes the turn', async() => {
-    res = await instance.placeStone(1, 2, {from: player2})
-    turn = await instance.turn()
-    assert.equal(turn.valueOf(), 1)
-  });
-
-  it('player 1 places a stone at (0, 3) and palyer 2 takes the turn', async() => {
-    res = await instance.placeStone(0, 3, {from: player1})
-    turn = await instance.turn()
-    assert.equal(turn.valueOf(), 2)
-    res = await instance.isFinalized(web3.utils.bytesToHex([2]), 10000)
-    assert.equal(res, false)
-  });
-
-  it('player 2 places a stone at (1, 3) and palyer 1 takes the turn', async() => {
-    res = await instance.placeStone(1, 3, {from: player2})
-    turn = await instance.turn()
-    assert.equal(turn.valueOf(), 1)
+  it('player 1 tries to place a stone at occupied slot (3, 12) and shoud fail', async() => {
+    try {
+      res = await instance.placeStone(3, 12, {from: player1})
+      assert.fail('expected revert not received')
+    } catch (e) {
+      turn = await instance.turn()
+      assert.equal(turn.valueOf(), 1)
+    }
   });
 
   it('player 1 places a stone at (0, 4) and wins the game', async() => {
     res = await instance.placeStone(0, 4, {from: player1})
     turn = await instance.turn()
     assert.equal(turn.valueOf(), 0)
-    res = await instance.isFinalized(web3.utils.bytesToHex([1]), 10000)
+    res = await instance.isFinalized(web3.utils.bytesToHex([1]), 1000)
     assert.equal(res, true)
     res = await instance.queryResult(web3.utils.bytesToHex([1]))
     assert.equal(res, true)
   });
-
-  it('intend settle, player 2 wins', async() => {
-    instance = await Gomoku.new(player1, player2, 100, 1, 8, 8)
-    var state = new Array(227)
-    state[0] = 2  // winner
-    state[1] = 0  // turn
-    const stateproof = await getStateProofBytes(12, state);
-    const sigs = await getSignatures(stateproof, player1, player2);
-    res = await instance.intendSettle(stateproof, sigs)
-    res = await instance.isFinalized(web3.utils.bytesToHex([2]), 10000)
-    assert.equal(res, true)
-    res = await instance.queryResult(web3.utils.bytesToHex([2]))
-    assert.equal(res, true)
-  });
-
-  it('intend settle, player 1 wins', async() => {
-    instance = await Gomoku.new(player1, player2, 100, 1, 8, 8)
-    var state = new Array(227)
-    state[0] = 0  // winner, not specified, but the board state will indicate player 1 wins.
-    state[1] = 2  // turn
-    // board state starts
-    state[2] = 1
-    state[3] = 1
-    state[4] = 1
-    state[5] = 1
-    state[6] = 1
-    state[101] = 2
-    state[102] = 2
-    state[103] = 2
-    state[108] = 2
-    const stateproof = await getStateProofBytes(21, state);
-    const sigs = await getSignatures(stateproof, player1, player2);
-    res = await instance.intendSettle(stateproof, sigs)
-    res = await instance.isFinalized(web3.utils.bytesToHex([1]), 10000)
-    assert.equal(res, true)
-    res = await instance.queryResult(web3.utils.bytesToHex([1]))
-    assert.equal(res, true)
-    res = await instance.queryState(); 
-  });
-
-  it('read on-chain state', async() => {
-    res = await instance.queryState();
-    state = web3.utils.hexToBytes(res)
-    assert.equal(state[0], 1)
-    assert.equal(state[1], 0)
-    assert.equal(state[2], 1)
-    assert.equal(state[3], 1)
-    assert.equal(state[4], 1)
-    assert.equal(state[5], 1)
-    assert.equal(state[6], 1)
-    assert.equal(state[101], 2)
-    assert.equal(state[102], 2)
-    assert.equal(state[103], 2)
-    assert.equal(state[108], 2)
-  });
-
 });
