@@ -105,7 +105,7 @@ contract Gomoku {
     @notice Confirm off-chain state is settled and update on-chain states (cOS API)
     */
     function confirmSettle() public {
-        if (game_phase == GamePhase.settle && block.number > settle_deadline) {
+        if (game_phase == GamePhase.settle && block.number >= settle_deadline) {
             game_phase = GamePhase.play; 
             move_deadline = block.number + move_timeout;
             emit ConfirmSettle();
@@ -174,10 +174,10 @@ contract Gomoku {
         emit PlaceStone(_x, _y);
 
         // check if there is five-in-a-row including this new stone
-        if (countFive(_x, _y, 1, 0, true) ||  // horizaontal bidirection
-            countFive(_x, _y, 0, 1, true) ||  // vertical bidirection
-            countFive(_x, _y, 1, 1, true) ||  // main-diagonal bidirection
-            countFive(_x, _y, 1, -1, true)) { // anti-diagonal bidirection
+        if (checkFive(_x, _y, 1, 0) ||  // horizaontal bidirection
+            checkFive(_x, _y, 0, 1) ||  // vertical bidirection
+            checkFive(_x, _y, 1, 1) ||  // main-diagonal bidirection
+            checkFive(_x, _y, 1, -1)) { // anti-diagonal bidirection
             winGame(turn); // we have a winner
             return;
         }
@@ -201,39 +201,15 @@ contract Gomoku {
     @param _y is y coordinate on the board
     @param _xdir is direction (-1 or 0 or 1) in x axis
     @param _ydir is direction (-1 or 0 or 1) in y axis
-    @param _bidirection indicates if reverse direction also needs to be counted
     @return true if there is five in a row
     */
-    function countFive(
-        uint8 _x,
-        uint8 _y,
-        int _xdir,
-        int _ydir,
-        bool _bidirection)
-        private view returns (bool)
-    {
-        uint8 count;
-        uint8 rx = uint8(int8(_x) - _xdir); // x coordinate of reverse direction
-        uint8 ry = uint8(int8(_y) - _ydir); // y coordinate of reverse direction
-        bool start = false;                 // if (x, y) is the start to this direction
-        if (!checkBoundary(rx, ry)) {
-            start = true;
-        } else if (board[rx][ry] != board[_x][_y]) {
-            start = true;
-        }
-
-        if (_bidirection || start) { // when unidirection, only count from start point
-            count = countStone(_x, _y, _xdir, _ydir);
-        }
-
-        if (_bidirection) {
-            count += countStone(_x, _y, -1 * _xdir, -1 * _ydir) - 1;
-        }
-
+    function checkFive(uint8 _x, uint8 _y, int _xdir, int _ydir) private view returns (bool) {
+        uint8 count = 0;
+        count += countStone(_x, _y, _xdir, _ydir);
+        count += countStone(_x, _y, -1 * _xdir, -1 * _ydir) - 1; // reverse direction
         if (count >= 5) {
             return true;
         }
-
         return false;
     }
 
@@ -254,28 +230,6 @@ contract Gomoku {
                 count += 1;
             } else {
                 return count;
-            }
-        }
-    }
-
-    /**
-    @notice Scan the board to check if there is a winner
-    */
-    function checkWinner() private {
-        for (uint8 x = 0; x < board_dimmension; x++) {
-            for (uint8 y = 0; y < board_dimmension; y++) {
-                uint8 player = board[x][y];
-                if (player != 0) {
-                    // check if there is five-in-a-row starting from this stone
-                    if (countFive(x, y, 1, 0, false) ||  // horizaontal unidirection
-                        countFive(x, y, 0, 1, false) ||  // vertical unidirection
-                        countFive(x, y, 1, 1, false) ||  // main-diagonal unidirection
-                        countFive(x, y, -1, 1, false)) { // anti-diagonal unidirection
-                        winGame(player);
-                        return;
-                    }
-                }
-
             }
         }
     }
@@ -336,7 +290,6 @@ contract Gomoku {
                 }
             }
             require(stone_num >= min_stone_offchain); // need at least minimal number of stones
-            checkWinner(); // check board state to see if someone wins
         }
         emit IntendSettle(nonce);
     }
