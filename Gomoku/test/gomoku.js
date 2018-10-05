@@ -156,8 +156,7 @@ contract('Gomoku', async(accounts) => {
     var state = new Array(227)
     state[0] = 0  // winner, not specified, but the board state will indicate player 1 wins.
     state[1] = 2  // turn
-    // board state starts
-    state[2] = 1
+    state[2] = 1  // board state starts
     state[3] = 1
     state[4] = 1
     state[5] = 1
