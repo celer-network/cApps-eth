@@ -1,9 +1,0 @@
-syntax = "proto3";
-
-package solidity;
-
-message address { bytes data = 1; }
-message uint    { bytes data = 1; }
-message uint8   { bytes data = 1; }
-message uint256 { bytes data = 1; }
-message bytes32 { bytes data = 1; }

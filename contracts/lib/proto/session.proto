@@ -1,0 +1,15 @@
+syntax = "proto3";
+import "google/protobuf/descriptor.proto";
+package session;
+
+extend google.protobuf.FieldOptions {
+  string soltype = 1004;
+}
+
+// used for multi-session app
+message SessionQuery {
+  // session ID
+  bytes session = 1 [(soltype) = "bytes32"];
+  // query related to the specified session
+  bytes query = 2;
+}
