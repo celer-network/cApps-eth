@@ -1,0 +1,40 @@
+[
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "_query",
+        "type": "bytes"
+      }
+    ],
+    "name": "isFinalized",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "_query",
+        "type": "bytes"
+      }
+    ],
+    "name": "getResult",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  }
+]

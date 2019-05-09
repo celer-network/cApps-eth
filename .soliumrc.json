@@ -1,0 +1,11 @@
+{
+  "extends": "solium:all",
+  "plugins": ["security"],
+  "rules": {
+    "blank-lines": "off",
+    "indentation": ["error", 4],
+    "lbrace": "off",
+    "no-empty-blocks": "off",
+    "uppercase": "off"
+  }
+}

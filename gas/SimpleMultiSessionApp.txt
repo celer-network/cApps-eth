@@ -1,0 +1,6 @@
+******* Gas Used in SimpleMultiSessionApp Tests ********
+
+contract deploy: 2242490
+first intendSettle: 202610
+applyAction: 47989
+second intendSettle: 86817
