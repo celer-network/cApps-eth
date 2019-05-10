@@ -22,23 +22,23 @@ This repo provides templates and examples for developing the on-chain contract p
 
 #### API required by [CelerChannel](https://github.com/celer-network/cChannel-eth)
 
-- [App with Boolean Result](https://github.com/celer-network/cApps/blob/master/contracts/templates/IBooleanResult.sol)
+- [App with Boolean Result](https://github.com/celer-network/cApps-eth/blob/master/contracts/templates/IBooleanResult.sol)
 
-- [App with Numeric Result](https://github.com/celer-network/cApps/blob/master/contracts/templates/INumericResult.sol)
+- [App with Numeric Result](https://github.com/celer-network/cApps-eth/blob/master/contracts/templates/INumericResult.sol)
 
 #### API required by [CelerX](https://celerx.app/).
 
-- [Multi-session Apps](https://github.com/celer-network/cApps/blob/master/contracts/templates/IMultiSession.sol)
+- [Multi-session Apps](https://github.com/celer-network/cApps-eth/blob/master/contracts/templates/IMultiSession.sol)
 
 
-- [Single-session Apps](https://github.com/celer-network/cApps/blob/master/contracts/templates/ISingleSession.sol)
+- [Single-session Apps](https://github.com/celer-network/cApps-eth/blob/master/contracts/templates/ISingleSession.sol)
 
 
 ## Template Interface
 
-We provide [templates](https://github.com/celer-network/cApps/tree/master/contracts/templates) to implement the common state-channel logics of external APIs, so that the developers can focus on the app-specific logic.
+We provide [templates](https://github.com/celer-network/cApps-eth/tree/master/contracts/templates) to implement the common state-channel logics of external APIs, so that the developers can focus on the app-specific logic.
 
-Developers using the provided templates **only need to implement the following interfaces**. For detailed usages, please refer to these [simplest example contracts](https://github.com/celer-network/cApps/tree/master/contracts/simple-app) and [tests](https://github.com/celer-network/cApps/tree/master/test/simple-app)
+Developers using the provided templates **only need to implement the following interfaces**. For detailed usages, please refer to these [simplest example contracts](https://github.com/celer-network/cApps-eth/tree/master/contracts/simple-app) and [tests](https://github.com/celer-network/cApps-eth/tree/master/test/simple-app)
 
 #### MultiSessionApp template interface
 
