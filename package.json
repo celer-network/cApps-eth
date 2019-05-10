@@ -1,7 +1,7 @@
 {
   "name": "celer-apps",
-  "description": "contracts of sample dApps running on Celer Network",
-  "repository": "https://github.com/celer-network/cApps",
+  "description": "CelerX dApp Contracts",
+  "repository": "https://github.com/celer-network/cApps-eth",
   "scripts": {
     "test": "npx truffle test",
     "compile": "npx truffle compile",
