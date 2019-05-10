@@ -2,11 +2,11 @@
 
 Celer dApps are highly interactive, secure and low-cost state-channel applications running on [Celer Network](www.celer.network) together with Celer [generic payment channel](https://github.com/celer-network/cChannel-eth). 
 
-This repo provides templates and examples for developing the on-chain contract parts of dApps that can easily run on Celer mobile and web SDK [CelerX](https://celerx.app/). Note that most of the app interactiions happens off-chain, and these contracts are only used when players cannot reach consensus off-chain and want to dispute on-chain.
+This repo provides templates and examples for developing the on-chain contract parts of dApps that can smoothly run on Celer mobile and web SDK [CelerX](https://celerx.app/). Note that most of the app nteractions happen off-chain. On-chain operations are only needed when players cannot reach consensus off-chain and want to dispute.
 
-- **Multi-Session App:** initially deployed once by developer and can be repeatedly shared by all players til. No additional code needs to be deployed when players of on session wants to dispute on chain.
+- **Multi-Session App:** initially deployed once by the developer and can be repeatedly shared by all players til. No additional code needs to be deployed when players want to dispute on-chain.
 
-- **Single-Session App:** mostly used as an one-time virtual contract for fixed players without initial deployment. The player who wants to bring the off-chain game to on-chain dispute need to first deploy the contract.
+- **Single-Session App:** mostly used as a one-time virtual contract for fixed players without initial deployment. The player who wants to bring the off-chain game to on-chain dispute needs first to deploy the contract.
  
 
 ## Latest Deployments
@@ -117,7 +117,7 @@ function getState(uint _key) external view returns (bytes memory);
 
 We leverage Protocol Buffers to define a series of blockchain-neutral generalized data structures, which can be seamlessly used in off-chain communication protocols and instantly extended to other blockchains that we plan to support. We also developed and open sourced a Solidity library generator for decoding proto3 called [pb3-gen-sol](https://github.com/celer-network/pb3-gen-sol).
 
-Below are the proto used by Celer dApps. [CelerX](https://celerx.app/) takes care of the protobuf encode and decode for app developers.
+Below are the protos used by Celer dApps. [CelerX](https://celerx.app/) takes care of the protobuf encode and decode for app developers.
 
 ```protobuf
 message AppState {
