@@ -23,7 +23,7 @@
     "openzeppelin-solidity": "^2.1.1",
     "protobufjs": "^6.8.8",
     "truffle-hdwallet-provider": "1.0.2",
-    "web3": "^1.0.0-beta.34"
+    "web3": "^1.0.0-beta.54"
   },
   "devDependencies": {
     "eslint": "^5.12.0",
@@ -35,7 +35,7 @@
     "ganache-cli": "^6.4.2",
     "npx": "^10.2.0",
     "solidity-coverage": "^0.5.11",
-    "solium": "^1.2.2",
+    "solium": "^1.2.4",
     "truffle": "^5.0.1"
   }
 }
