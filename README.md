@@ -16,7 +16,6 @@ This repo provides templates and examples for developing the on-chain contract p
 #### MultiGomoku
 - Contract address: [0xb352b23620ab8d75a05012aec0e0f5ce1015d743](https://ropsten.etherscan.io/address/0xb352b23620ab8d75a05012aec0e0f5ce1015d743)
 - Deployed code: [MultiGomoku.sol](https://github.com/celer-network/cApps-eth/blob/3f471fd70a/contracts/gomoku/MultiGomoku.sol)
-- Creator (owner): 0x674fa8ec8572f476f07b2bc7042e80a4f4d64107
 
 ## External API
 
