@@ -16,17 +16,11 @@ This repo provides templates and examples for developing the on-chain contract p
 #### MultiGomoku
 - Contract address: [0xa5cb3fcb9fc2c7a285615455735530ed0d1dfeb6](https://ropsten.etherscan.io/address/0xb352b23620ab8d75a05012aec0e0f5ce1015d743)
 - Constructor: minStoneOffchain=5， maxStoneOnchain=3
-- Deployed code: [MultiGomoku.sol](https://github.com/celer-network/cApps-eth/blob/26e26e1f152cc6ad11675b22383c868839055358/contracts/gomoku/MultiGomoku.sol)
-
-### Mainnet
-
-#### MultiGomoku
-- Contract address: [0x8521714a9ef8f9e63e5adb4246207a04815099b9](https://etherscan.io/address/0x8521714a9ef8f9e63e5adb4246207a04815099b9)
-- Deployed code: [MultiGomoku.sol](https://github.com/celer-network/cApps-eth/blob/88391d4953/contracts/gomoku/MultiGomoku.sol)
+- Deployed code: [MultiGomoku.sol](https://github.com/celer-network/cApps-eth/blob/3064786217/contracts/gomoku/MultiGomoku.sol)
 
 ## External API
 
-#### API required by [CelerChannel](https://github.com/celer-network/cChannel-eth)
+#### API required by [Celer Payment Channel](https://github.com/celer-network/cChannel-eth)
 
 - [App with Boolean Outcome](https://github.com/celer-network/cApps-eth/blob/master/contracts/templates/IBooleanOutcome.sol)
 
