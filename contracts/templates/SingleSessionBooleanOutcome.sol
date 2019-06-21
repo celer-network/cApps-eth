@@ -1,8 +1,8 @@
 pragma solidity ^0.5.0;
 import "./SingleSessionApp.sol";
-import "./IBooleanResult.sol";
+import "./IBooleanOutcome.sol";
 
-contract SingleSessionBooleanResult is SingleSessionApp, IBooleanResult {
+contract SingleSessionBooleanOutcome is SingleSessionApp, IBooleanOutcome {
 
     constructor(
         address[] memory _players,

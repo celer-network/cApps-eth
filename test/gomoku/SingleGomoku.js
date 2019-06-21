@@ -38,7 +38,7 @@ contract('SingleGomoku', async accounts => {
     await instance.intendSettle(stateProof);
     res = await instance.isFinalized([]);
     assert.equal(res, true);
-    res = await instance.getResult(web3.utils.bytesToHex([2]));
+    res = await instance.getOutcome(web3.utils.bytesToHex([2]));
     assert.equal(res, true);
   });
 
@@ -178,7 +178,7 @@ contract('SingleGomoku', async accounts => {
     assert.equal(turn.valueOf(), 0);
     res = await instance.isFinalized([]);
     assert.equal(res, true);
-    res = await instance.getResult(web3.utils.bytesToHex([1]));
+    res = await instance.getOutcome(web3.utils.bytesToHex([1]));
     assert.equal(res, true);
   });
 
@@ -223,7 +223,7 @@ contract('SingleGomoku', async accounts => {
     fs.appendFileSync(GAS_USED_LOG, 'finalizeOnActionTimeout: ' + utils.getCallGasUsed(res) + '\n');
     res = await instance.isFinalized([]);
     assert.equal(res, true);
-    res = await instance.getResult(web3.utils.bytesToHex([1]));
+    res = await instance.getOutcome(web3.utils.bytesToHex([1]));
     assert.equal(res, true);
   });
 });

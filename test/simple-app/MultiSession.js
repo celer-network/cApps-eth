@@ -22,7 +22,7 @@ contract('SimpleMultiSessionApp', async accounts => {
   });
 
   it('new app deployed and first intend settle should success', async () => {
-    instance = await SimpleMultiSessionApp.new(timeout, 2);
+    instance = await SimpleMultiSessionApp.new(2);
     gasUsed = await utils.getDeployGasUsed(instance);
     fs.appendFileSync(GAS_USED_LOG, 'contract deploy: ' + gasUsed + '\n');
     const seq = 2;
@@ -41,7 +41,7 @@ contract('SimpleMultiSessionApp', async accounts => {
     assert.equal(args.session, session1);
 
     const arg = await pbApp.encodeSessionQuery(session1, [5]);
-    res = await instance.getResult(arg);
+    res = await instance.getOutcome(arg);
     assert.equal(res, true);
     res = await instance.isFinalized(session1);
     assert.equal(res, false);
@@ -67,7 +67,7 @@ contract('SimpleMultiSessionApp', async accounts => {
     res = await instance.applyAction(session1, [3]);
     fs.appendFileSync(GAS_USED_LOG, 'applyAction: ' + utils.getCallGasUsed(res) + '\n');
     const query = await pbApp.encodeSessionQuery(session1, [3]);
-    res = await instance.getResult(query);
+    res = await instance.getOutcome(query);
     assert.equal(res, true);
   });
 
@@ -118,7 +118,7 @@ contract('SimpleMultiSessionApp', async accounts => {
     );
     await instance.intendSettle(stateProof);
     const arg = await pbApp.encodeSessionQuery(session1, [3]);
-    const res = await instance.getResult(arg);
+    const res = await instance.getOutcome(arg);
     assert.equal(res, true);
   });
 
@@ -134,7 +134,7 @@ contract('SimpleMultiSessionApp', async accounts => {
     );
     await instance.intendSettle(stateProof);
     const arg = await pbApp.encodeSessionQuery(session1, [3]);
-    const res = await instance.getResult(arg);
+    const res = await instance.getOutcome(arg);
     assert.equal(res, true);
   });
 
@@ -151,7 +151,7 @@ contract('SimpleMultiSessionApp', async accounts => {
     res = await instance.intendSettle(stateProof);
     fs.appendFileSync(GAS_USED_LOG, 'second intendSettle: ' + utils.getCallGasUsed(res) + '\n');
     const arg = await pbApp.encodeSessionQuery(session1, [2]);
-    res = await instance.getResult(arg);
+    res = await instance.getOutcome(arg);
     assert.equal(res, true);
     res = await instance.isFinalized(session1);
     assert.equal(res, true);

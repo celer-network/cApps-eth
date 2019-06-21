@@ -1,8 +1,8 @@
 ******* Gas Used in SingleGomoku Tests ********
 
-contract deploy: 3163535
-first intendSettle: 245881
-second intendSettle: 186113
+contract deploy: 3174135
+first intendSettle: 245918
+second intendSettle: 186150
 applyAction: 89977
 applyAction: 78692
 finalizeOnActionTimeout: 41732

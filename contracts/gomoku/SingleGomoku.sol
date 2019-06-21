@@ -1,7 +1,7 @@
 pragma solidity ^0.5.0;
-import "../templates/SingleSessionBooleanResult.sol";
+import "../templates/SingleSessionBooleanOutcome.sol";
 
-contract SingleGomoku is SingleSessionBooleanResult {
+contract SingleGomoku is SingleSessionBooleanOutcome {
 
     enum StateKey {Turn, Winner, FullState}
 
@@ -20,7 +20,7 @@ contract SingleGomoku is SingleSessionBooleanResult {
         uint8 _minStoneOffchain,
         uint8 _maxStoneOnchain)
         public
-        SingleSessionBooleanResult(_players, _nonce, _timeout)
+        SingleSessionBooleanOutcome(_players, _nonce, _timeout)
     {
         require(_players.length == 2, "invalid number of players");
         minStoneOffchain = _minStoneOffchain;
@@ -29,11 +29,11 @@ contract SingleGomoku is SingleSessionBooleanResult {
     }
 
     /**
-     * @notice Get the app result
+     * @notice Get the app outcome
      * @param _query Query arg, player id (1 or 2)
      * @return True if the player wins
      */
-    function getResult(bytes calldata _query) external view returns (bool) {
+    function getOutcome(bytes calldata _query) external view returns (bool) {
         require(_query.length == 1, "invalid query length");
         return boardState[0] == _query[0];
     }

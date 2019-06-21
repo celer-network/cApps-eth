@@ -28,7 +28,7 @@ var (
 )
 
 // IMultiSessionABI is the input ABI used to generate the binding from.
-const IMultiSessionABI = "[{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"session\",\"type\":\"bytes32\"},{\"indexed\":false,\"name\":\"seq\",\"type\":\"uint256\"}],\"name\":\"IntendSettle\",\"type\":\"event\"},{\"constant\":false,\"inputs\":[{\"name\":\"_stateProof\",\"type\":\"bytes\"}],\"name\":\"intendSettle\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_session\",\"type\":\"bytes32\"}],\"name\":\"getSettleFinalizedTime\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_session\",\"type\":\"bytes32\"},{\"name\":\"_action\",\"type\":\"bytes\"}],\"name\":\"applyAction\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_session\",\"type\":\"bytes32\"}],\"name\":\"finalizeOnActionTimeout\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_session\",\"type\":\"bytes32\"}],\"name\":\"getActionDeadline\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_session\",\"type\":\"bytes32\"}],\"name\":\"getStatus\",\"outputs\":[{\"name\":\"\",\"type\":\"uint8\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_session\",\"type\":\"bytes32\"}],\"name\":\"getSeqNum\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_session\",\"type\":\"bytes32\"},{\"name\":\"_key\",\"type\":\"uint256\"}],\"name\":\"getState\",\"outputs\":[{\"name\":\"\",\"type\":\"bytes\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_nonce\",\"type\":\"uint256\"},{\"name\":\"_signers\",\"type\":\"address[]\"}],\"name\":\"getSessionID\",\"outputs\":[{\"name\":\"\",\"type\":\"bytes32\"}],\"payable\":false,\"stateMutability\":\"pure\",\"type\":\"function\"}]"
+const IMultiSessionABI = "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"session\",\"type\":\"bytes32\"},{\"indexed\":false,\"name\":\"seq\",\"type\":\"uint256\"}],\"name\":\"IntendSettle\",\"type\":\"event\"},{\"constant\":false,\"inputs\":[{\"name\":\"_stateProof\",\"type\":\"bytes\"}],\"name\":\"intendSettle\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_session\",\"type\":\"bytes32\"}],\"name\":\"getSettleFinalizedTime\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_session\",\"type\":\"bytes32\"},{\"name\":\"_action\",\"type\":\"bytes\"}],\"name\":\"applyAction\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_session\",\"type\":\"bytes32\"}],\"name\":\"finalizeOnActionTimeout\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_session\",\"type\":\"bytes32\"}],\"name\":\"getActionDeadline\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_session\",\"type\":\"bytes32\"}],\"name\":\"getStatus\",\"outputs\":[{\"name\":\"\",\"type\":\"uint8\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_session\",\"type\":\"bytes32\"}],\"name\":\"getSeqNum\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_session\",\"type\":\"bytes32\"},{\"name\":\"_key\",\"type\":\"uint256\"}],\"name\":\"getState\",\"outputs\":[{\"name\":\"\",\"type\":\"bytes\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_nonce\",\"type\":\"uint256\"},{\"name\":\"_signers\",\"type\":\"address[]\"}],\"name\":\"getSessionID\",\"outputs\":[{\"name\":\"\",\"type\":\"bytes32\"}],\"payable\":false,\"stateMutability\":\"pure\",\"type\":\"function\"}]"
 
 // IMultiSessionBin is the compiled bytecode used for deploying new contracts.
 const IMultiSessionBin = `0x`
@@ -483,10 +483,15 @@ type IMultiSessionIntendSettle struct {
 
 // FilterIntendSettle is a free log retrieval operation binding the contract event 0x82c4eeba939ff9358877334330e22a5cdb0472113cd14f90625ea634b60d2e5b.
 //
-// Solidity: event IntendSettle(bytes32 session, uint256 seq)
-func (_IMultiSession *IMultiSessionFilterer) FilterIntendSettle(opts *bind.FilterOpts) (*IMultiSessionIntendSettleIterator, error) {
+// Solidity: event IntendSettle(bytes32 indexed session, uint256 seq)
+func (_IMultiSession *IMultiSessionFilterer) FilterIntendSettle(opts *bind.FilterOpts, session [][32]byte) (*IMultiSessionIntendSettleIterator, error) {
 
-	logs, sub, err := _IMultiSession.contract.FilterLogs(opts, "IntendSettle")
+	var sessionRule []interface{}
+	for _, sessionItem := range session {
+		sessionRule = append(sessionRule, sessionItem)
+	}
+
+	logs, sub, err := _IMultiSession.contract.FilterLogs(opts, "IntendSettle", sessionRule)
 	if err != nil {
 		return nil, err
 	}
@@ -495,10 +500,15 @@ func (_IMultiSession *IMultiSessionFilterer) FilterIntendSettle(opts *bind.Filte
 
 // WatchIntendSettle is a free log subscription operation binding the contract event 0x82c4eeba939ff9358877334330e22a5cdb0472113cd14f90625ea634b60d2e5b.
 //
-// Solidity: event IntendSettle(bytes32 session, uint256 seq)
-func (_IMultiSession *IMultiSessionFilterer) WatchIntendSettle(opts *bind.WatchOpts, sink chan<- *IMultiSessionIntendSettle) (event.Subscription, error) {
+// Solidity: event IntendSettle(bytes32 indexed session, uint256 seq)
+func (_IMultiSession *IMultiSessionFilterer) WatchIntendSettle(opts *bind.WatchOpts, sink chan<- *IMultiSessionIntendSettle, session [][32]byte) (event.Subscription, error) {
 
-	logs, sub, err := _IMultiSession.contract.WatchLogs(opts, "IntendSettle")
+	var sessionRule []interface{}
+	for _, sessionItem := range session {
+		sessionRule = append(sessionRule, sessionItem)
+	}
+
+	logs, sub, err := _IMultiSession.contract.WatchLogs(opts, "IntendSettle", sessionRule)
 	if err != nil {
 		return nil, err
 	}

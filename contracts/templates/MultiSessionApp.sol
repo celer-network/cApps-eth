@@ -1,20 +1,19 @@
 pragma solidity ^0.5.0;
 import "../lib/Pb.sol";
 import "../lib/PbApp.sol";
-import "../lib/PbSession.sol";
 import "../lib/LibSignature.sol";
 import "./IMultiSession.sol";
 
 contract MultiSessionApp is IMultiSession {
 
     struct AppInfo {
-        uint timeout;
         uint playerNum;
     }
 
     struct SessionInfo {
         address[] players;
         uint seqNum;
+        uint timeout;
         uint deadline;
         SessionStatus status;
     }
@@ -22,8 +21,7 @@ contract MultiSessionApp is IMultiSession {
     AppInfo internal appInfo;
     mapping(bytes32 => SessionInfo) internal sessionInfoMap; // session id -> session info
 
-    constructor(uint _timeout, uint _playerNum) public {
-        appInfo.timeout = _timeout;
+    constructor(uint _playerNum) public {
         appInfo.playerNum =_playerNum;
     }
 
@@ -72,7 +70,8 @@ contract MultiSessionApp is IMultiSession {
         require(sessionInfo.seqNum < appstate.seqNum, "invalid sequence number");
         sessionInfo.seqNum = appstate.seqNum;
         sessionInfo.status = SessionStatus.SETTLE;
-        sessionInfo.deadline = block.number + appInfo.timeout;
+        sessionInfo.timeout = appstate.timeout;
+        sessionInfo.deadline = block.number + appstate.timeout;
 
         require(updateByState(session, appstate.state), "state update failed");
         emit IntendSettle(session, sessionInfo.seqNum);
@@ -91,7 +90,7 @@ contract MultiSessionApp is IMultiSession {
         }
         require(sessionInfo.status == SessionStatus.ACTION, "app not in action mode");
         sessionInfo.seqNum++;
-        sessionInfo.deadline = block.number + appInfo.timeout;
+        sessionInfo.deadline = block.number + sessionInfo.timeout;
 
         require(updateByAction(_session, _action));
     }
@@ -100,12 +99,13 @@ contract MultiSessionApp is IMultiSession {
      * @notice Finalize in case of on-chain action timeout
      */
     function finalizeOnActionTimeout(bytes32 _session) external {
-        SessionStatus status = sessionInfoMap[_session].status;
-        uint deadline = sessionInfoMap[_session].deadline;
+        SessionInfo storage sessionInfo = sessionInfoMap[_session];
+        SessionStatus status = sessionInfo.status;
+        uint deadline = sessionInfo.deadline;
         if (status == SessionStatus.ACTION) {
             require(block.number > deadline);
         } else if (status == SessionStatus.SETTLE) {
-            require(block.number > deadline + appInfo.timeout);
+            require(block.number > deadline + sessionInfo.timeout);
         } else {
             return;
         }
@@ -136,7 +136,7 @@ contract MultiSessionApp is IMultiSession {
         if(sessionInfoMap[_session].status == SessionStatus.ACTION) {
             return sessionInfoMap[_session].deadline;
         } else if(sessionInfoMap[_session].status == SessionStatus.SETTLE) {
-            return sessionInfoMap[_session].deadline + appInfo.timeout;
+            return sessionInfoMap[_session].deadline + sessionInfoMap[_session].timeout;
         }
         return 0;
     }

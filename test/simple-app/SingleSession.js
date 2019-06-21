@@ -54,7 +54,7 @@ contract('SimpleSingleSessionApp', async accounts => {
     const { event, args } = res.logs[0];
     assert.equal(event, 'IntendSettle');
     assert.equal(args.seq.toString(10), seq);
-    res = await instance.getResult(web3.utils.bytesToHex([5]));
+    res = await instance.getOutcome(web3.utils.bytesToHex([5]));
     assert.equal(res, true);
     res = await instance.isFinalized([]);
     assert.equal(res, false);
@@ -78,7 +78,7 @@ contract('SimpleSingleSessionApp', async accounts => {
     await utils.waitBlock(settleFinalizedTime, accounts[0]);
     res = await instance.applyAction(web3.utils.bytesToHex([3]));
     fs.appendFileSync(GAS_USED_LOG, 'applyAction: ' + utils.getCallGasUsed(res) + '\n');
-    res = await instance.getResult(web3.utils.bytesToHex([3]));
+    res = await instance.getOutcome(web3.utils.bytesToHex([3]));
     assert.equal(res, true);
   });
 
@@ -119,7 +119,7 @@ contract('SimpleSingleSessionApp', async accounts => {
     const { event, args } = res.logs[0];
     assert.equal(event, 'IntendSettle');
     assert.equal(args.seq.toString(10), seq);
-    res = await instance.getResult(web3.utils.bytesToHex([2]));
+    res = await instance.getOutcome(web3.utils.bytesToHex([2]));
     assert.equal(res, true);
     res = await instance.isFinalized([]);
     assert.equal(res, true);

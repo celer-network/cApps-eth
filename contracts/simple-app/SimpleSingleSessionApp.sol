@@ -1,7 +1,7 @@
 pragma solidity ^0.5.0;
-import "../templates/SingleSessionBooleanResult.sol";
+import "../templates/SingleSessionBooleanOutcome.sol";
 
-contract SimpleSingleSessionApp is SingleSessionBooleanResult {
+contract SimpleSingleSessionApp is SingleSessionBooleanOutcome {
     uint8 private state;
 
     constructor(
@@ -9,16 +9,16 @@ contract SimpleSingleSessionApp is SingleSessionBooleanResult {
         uint _nonce,
         uint _timeout)
         public
-        SingleSessionBooleanResult(_players, _nonce, _timeout)
+        SingleSessionBooleanOutcome(_players, _nonce, _timeout)
     {
     }
 
     /**
-     * @notice Get the app result
+     * @notice Get the app outcome
      * @param _query Query args
      * @return True if query satisfied
      */
-    function getResult(bytes calldata _query) external view returns (bool) {
+    function getOutcome(bytes calldata _query) external view returns (bool) {
         require(_query.length == 1, "invalid query length");
         return state == uint8(_query[0]);
     }
