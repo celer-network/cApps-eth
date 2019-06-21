@@ -1,7 +1,7 @@
 pragma solidity ^0.5.0;
-import "../templates/MultiSessionBooleanResult.sol";
+import "../templates/MultiSessionBooleanOutcome.sol";
 
-contract MultiGomoku is MultiSessionBooleanResult {
+contract MultiGomoku is MultiSessionBooleanOutcome {
 
     enum StateKey {Turn, Winner, FullState}
 
@@ -18,19 +18,19 @@ contract MultiGomoku is MultiSessionBooleanResult {
 
     mapping(bytes32 => GameInfo) private gameInfoMap; // session id -> game info
 
-    constructor(uint _timeout, uint8 _minStoneOffchain, uint8 _maxStoneOnchain)
-        public MultiSessionBooleanResult(_timeout, 2)
+    constructor(uint8 _minStoneOffchain, uint8 _maxStoneOnchain)
+        public MultiSessionBooleanOutcome(2)
     {
         minStoneOffchain = _minStoneOffchain;
         maxStoneOnchain = _maxStoneOnchain;
     }
 
     /**
-     * @notice Get the app result
+     * @notice Get the app outcome
      * @param _query Query arg, player id (1 or 2)
      * @return True if the player wins
      */
-    function getResult(bytes32 _session, bytes memory _query)
+    function getOutcome(bytes32 _session, bytes memory _query)
         internal
         view
         returns (bool)

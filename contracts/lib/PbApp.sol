@@ -10,6 +10,7 @@ library PbApp {
         uint nonce;   // tag: 1
         uint seqNum;   // tag: 2
         bytes state;   // tag: 3
+        uint timeout;   // tag: 4
     } // end struct AppState
 
     function decAppState(bytes memory raw) internal pure returns (AppState memory m) {
@@ -28,6 +29,9 @@ library PbApp {
             }
             else if (tag == 3) {
                 m.state = bytes(buf.decBytes());
+            }
+            else if (tag == 4) {
+                m.timeout = uint(buf.decVarint());
             }
             else { buf.skipValue(wire); } // skip value of unknown tag
         }
@@ -60,5 +64,28 @@ library PbApp {
             else { buf.skipValue(wire); } // skip value of unknown tag
         }
     } // end decoder StateProof
+
+    struct SessionQuery {
+        bytes32 session;   // tag: 1
+        bytes query;   // tag: 2
+    } // end struct SessionQuery
+
+    function decSessionQuery(bytes memory raw) internal pure returns (SessionQuery memory m) {
+        Pb.Buffer memory buf = Pb.fromBytes(raw);
+
+        uint tag;
+        Pb.WireType wire;
+        while (buf.hasMore()) {
+            (tag, wire) = buf.decKey();
+            if (false) {} // solidity has no switch/case
+            else if (tag == 1) {
+                m.session = Pb._bytes32(buf.decBytes());
+            }
+            else if (tag == 2) {
+                m.query = bytes(buf.decBytes());
+            }
+            else { buf.skipValue(wire); } // skip value of unknown tag
+        }
+    } // end decoder SessionQuery
 
 }

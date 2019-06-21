@@ -1,4 +1,5 @@
 # Celer dApp Contract
+[![CircleCI](https://circleci.com/gh/celer-network/cApps.svg?style=svg&circle-token=0e015404fc2cb92472ad66b08d050e41454f0591)](https://circleci.com/gh/celer-network/cApps)
 
 Celer dApps are highly interactive, secure and low-cost state-channel applications running on [Celer Network](https://www.celer.network) together with Celer [generic payment channel](https://github.com/celer-network/cChannel-eth). 
 
@@ -15,40 +16,53 @@ This repo provides templates and examples for developing the on-chain contract p
 
 #### MultiGomoku
 - Contract address: [0xb352b23620ab8d75a05012aec0e0f5ce1015d743](https://ropsten.etherscan.io/address/0xb352b23620ab8d75a05012aec0e0f5ce1015d743)
-- Deployed code: [MultiGomoku.sol](https://github.com/celer-network/cApps-eth/blob/3f471fd70a/contracts/gomoku/MultiGomoku.sol)
+- Deployed code: [MultiGomoku.sol](https://github.com/celer-network/cApps/blob/88391d4953/contracts/gomoku/MultiGomoku.sol)
+
+### Mainnet
+
+#### MultiGomoku
+- Contract address: [0x8521714a9ef8f9e63e5adb4246207a04815099b9](https://etherscan.io/address/0x8521714a9ef8f9e63e5adb4246207a04815099b9)
+- Deployed code: [MultiGomoku.sol](https://github.com/celer-network/cApps/blob/88391d4953/contracts/gomoku/MultiGomoku.sol)
+<!-- more detailed info about mainnet deployment
+- Contract creator: 0x4d5f5FF50Cc7fDBDC995D837ED467F6e99cA5d03
+- [Constructor parameters](https://github.com/celer-network/cBots/blob/r0.9/cgomoku/bot/gomokubot.go#L35-L37):
+  - `_timeout`: 3
+  - `_minStoneOffchain`: 5
+  - `_maxStoneOnchain`: 3
+-->
 
 ## External API
 
 #### API required by [CelerChannel](https://github.com/celer-network/cChannel-eth)
 
-- [App with Boolean Result](https://github.com/celer-network/cApps-eth/blob/master/contracts/templates/IBooleanResult.sol)
+- [App with Boolean Outcome](https://github.com/celer-network/cApps/blob/master/contracts/templates/IBooleanOutcome.sol)
 
-- [App with Numeric Result](https://github.com/celer-network/cApps-eth/blob/master/contracts/templates/INumericResult.sol)
+- [App with Numeric Outcome](https://github.com/celer-network/cApps/blob/master/contracts/templates/INumericOutcome.sol)
 
 #### API required by [CelerX](https://celerx.app/).
 
-- [Multi-session Apps](https://github.com/celer-network/cApps-eth/blob/master/contracts/templates/IMultiSession.sol)
+- [Multi-session Apps](https://github.com/celer-network/cApps/blob/master/contracts/templates/IMultiSession.sol)
 
 
-- [Single-session Apps](https://github.com/celer-network/cApps-eth/blob/master/contracts/templates/ISingleSession.sol)
+- [Single-session Apps](https://github.com/celer-network/cApps/blob/master/contracts/templates/ISingleSession.sol)
 
 
 ## Template Interface
 
-We provide [templates](https://github.com/celer-network/cApps-eth/tree/master/contracts/templates) to implement the common state-channel logics of external APIs, so that the developers can focus on the app-specific logic.
+We provide [templates](https://github.com/celer-network/cApps/tree/master/contracts/templates) to implement the common state-channel logics of external APIs, so that the developers can focus on the app-specific logic.
 
-Developers using the provided templates **only need to implement the following interfaces**. For detailed usages, please refer to these [simplest example contracts](https://github.com/celer-network/cApps-eth/tree/master/contracts/simple-app) and [tests](https://github.com/celer-network/cApps-eth/tree/master/test/simple-app)
+Developers using the provided templates **only need to implement the following interfaces**. For detailed usages, please refer to these [simplest example contracts](https://github.com/celer-network/cApps/tree/master/contracts/simple-app) and [tests](https://github.com/celer-network/cApps/tree/master/test/simple-app)
 
 #### MultiSessionApp template interface
 
 ```javascript
 /**
- * @notice Get the app result
+ * @notice Get the app outcome
  * @param _session Session ID
  * @param _query Query arg
  * @return True if query satisfied
  */
-function getResult(bytes32 _session, bytes memory _query) internal view returns (bool) {}
+function getOutcome(bytes32 _session, bytes memory _query) internal view returns (bool) {}
 
 /**
  * @notice Update on-chain state according to off-chain state proof
@@ -81,11 +95,11 @@ function getState(bytes32 _session, uint _key) external view returns (bytes memo
 
 ```javascript
 /**
- * @notice Get the app result
+ * @notice Get the app outcome
  * @param _query Query args
  * @return True if query satisfied
  */
-function getResult(bytes memory _query) public view returns (bool) {}
+function getOutcome(bytes memory _query) public view returns (bool) {}
 
 /**
  * @notice Update state according to an off-chain state proof
@@ -126,6 +140,8 @@ message AppState {
   uint64 seq_num = 2 [(soltype) = "uint"];
   // app specific state
   bytes state = 3;
+  // on-chain response (settle, action) timeout
+  uint64 timeout = 4 [(soltype) = "uint"];
 }
 
 message StateProof {

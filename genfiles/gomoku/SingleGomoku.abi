@@ -158,7 +158,7 @@
         "type": "bytes"
       }
     ],
-    "name": "getResult",
+    "name": "getOutcome",
     "outputs": [
       {
         "name": "",

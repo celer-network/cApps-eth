@@ -27,7 +27,7 @@ contract('MultiGomoku', async accounts => {
   });
 
   it('new app deployed', async () => {
-    instance = await MultiGomoku.new(timeout, 5, 5);
+    instance = await MultiGomoku.new(5, 5);
     gasUsed = await utils.getDeployGasUsed(instance);
     fs.appendFileSync(GAS_USED_LOG, 'contract deploy: ' + gasUsed + '\n');
   });
@@ -185,7 +185,7 @@ contract('MultiGomoku', async accounts => {
     res = await instance.isFinalized(session1);
     assert.equal(res, true);
     const arg = await pbApp.encodeSessionQuery(session1, [1]);
-    res = await instance.getResult(arg);
+    res = await instance.getOutcome(arg);
     assert.equal(res, true);
   });
 
@@ -271,7 +271,7 @@ contract('MultiGomoku', async accounts => {
     res = await instance.isFinalized(session2);
     assert.equal(res, true);
     const arg = await pbApp.encodeSessionQuery(session2, [2]);
-    res = await instance.getResult(arg);
+    res = await instance.getOutcome(arg);
     assert.equal(res, true);
   });
 });

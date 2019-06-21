@@ -1,25 +1,25 @@
 pragma solidity ^0.5.0;
-import "../templates/MultiSessionBooleanResult.sol";
+import "../templates/MultiSessionBooleanOutcome.sol";
 
-contract SimpleMultiSessionApp is MultiSessionBooleanResult {
+contract SimpleMultiSessionApp is MultiSessionBooleanOutcome {
     struct GameInfo {
         uint8 state;
     }
 
     mapping(bytes32 => GameInfo) private gameInfoMap; // session ID -> app data
 
-    constructor(uint _timeout, uint _playerNum)
-        public MultiSessionBooleanResult(_timeout, _playerNum)
+    constructor(uint _playerNum)
+        public MultiSessionBooleanOutcome(_playerNum)
     {
     }
 
     /**
-     * @notice Get the app result
+     * @notice Get the app outcome
      * @param _session Session ID
      * @param _query Query args
      * @return True if given player wins
      */
-    function getResult(bytes32 _session, bytes memory _query)
+    function getOutcome(bytes32 _session, bytes memory _query)
         internal
         view
         returns (bool)

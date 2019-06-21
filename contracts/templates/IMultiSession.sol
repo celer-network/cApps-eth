@@ -4,7 +4,7 @@ interface IMultiSession {
 
     enum SessionStatus {IDLE, SETTLE, ACTION, FINALIZED}
 
-    event IntendSettle(bytes32 session, uint seq);
+    event IntendSettle(bytes32 indexed session, uint seq);
 
     /**
      * @notice Submit off-chain state and start to dispute

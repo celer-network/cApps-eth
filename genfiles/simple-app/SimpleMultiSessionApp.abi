@@ -166,10 +166,6 @@
   {
     "inputs": [
       {
-        "name": "_timeout",
-        "type": "uint256"
-      },
-      {
         "name": "_playerNum",
         "type": "uint256"
       }
@@ -182,7 +178,7 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
+        "indexed": true,
         "name": "session",
         "type": "bytes32"
       },
@@ -203,7 +199,7 @@
         "type": "bytes"
       }
     ],
-    "name": "getResult",
+    "name": "getOutcome",
     "outputs": [
       {
         "name": "",

@@ -1,6 +1,6 @@
 pragma solidity ^0.5.0;
 
-interface IBooleanResult {
+interface INumericOutcome {
     function isFinalized(bytes calldata _query) external view returns (bool);
-    function getResult(bytes calldata _query) external view returns (bool);
+    function getOutcome(bytes calldata _query) external view returns (uint);
 }
