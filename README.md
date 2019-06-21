@@ -1,5 +1,4 @@
 # Celer dApp Contract
-[![CircleCI](https://circleci.com/gh/celer-network/cApps.svg?style=svg&circle-token=0e015404fc2cb92472ad66b08d050e41454f0591)](https://circleci.com/gh/celer-network/cApps)
 
 Celer dApps are highly interactive, secure and low-cost state-channel applications running on [Celer Network](https://www.celer.network) together with Celer [generic payment channel](https://github.com/celer-network/cChannel-eth). 
 
