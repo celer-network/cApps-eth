@@ -1,56 +1,49 @@
 # Celer dApp Contract
 
-Celer dApps are highly interactive, secure and low-cost state-channel applications running on [Celer Network](https://www.celer.network) together with Celer [generic payment channel](https://github.com/celer-network/cChannel-eth). 
+Celer dApps are highly interactive, secure and low-cost state-channel applications running on [Celer Network](https://www.celer.network) together with Celer [generic payment channel](https://github.com/celer-network/cChannel-eth).
 
 This repo provides templates and examples for developing the on-chain contract parts of dApps that can smoothly run on Celer mobile and web SDK [CelerX](https://celerx.app/). Note that most of the app nteractions happen off-chain. On-chain operations are only needed when players cannot reach consensus off-chain and want to dispute.
 
 - **Multi-Session App:** initially deployed once by the developer and can be repeatedly shared by all players. No additional code needs to be deployed when players want to dispute on-chain.
 
 - **Single-Session App:** mostly used as a one-time virtual contract for fixed players without initial deployment. The player who wants to bring the off-chain game to on-chain dispute needs first to deploy the contract.
- 
+
 
 ## Latest Deployments
 
 ### Ropsten Testnet
 
 #### MultiGomoku
-- Contract address: [0xb352b23620ab8d75a05012aec0e0f5ce1015d743](https://ropsten.etherscan.io/address/0xb352b23620ab8d75a05012aec0e0f5ce1015d743)
-- Deployed code: [MultiGomoku.sol](https://github.com/celer-network/cApps/blob/88391d4953/contracts/gomoku/MultiGomoku.sol)
+- Contract address: [0xa5cb3fcb9fc2c7a285615455735530ed0d1dfeb6](https://ropsten.etherscan.io/address/0xb352b23620ab8d75a05012aec0e0f5ce1015d743)
+- Constructor: minStoneOffchain=5， maxStoneOnchain=3
+- Deployed code: [MultiGomoku.sol](https://github.com/celer-network/cApps-eth/blob/26e26e1f152cc6ad11675b22383c868839055358/contracts/gomoku/MultiGomoku.sol)
 
 ### Mainnet
 
 #### MultiGomoku
 - Contract address: [0x8521714a9ef8f9e63e5adb4246207a04815099b9](https://etherscan.io/address/0x8521714a9ef8f9e63e5adb4246207a04815099b9)
-- Deployed code: [MultiGomoku.sol](https://github.com/celer-network/cApps/blob/88391d4953/contracts/gomoku/MultiGomoku.sol)
-<!-- more detailed info about mainnet deployment
-- Contract creator: 0x4d5f5FF50Cc7fDBDC995D837ED467F6e99cA5d03
-- [Constructor parameters](https://github.com/celer-network/cBots/blob/r0.9/cgomoku/bot/gomokubot.go#L35-L37):
-  - `_timeout`: 3
-  - `_minStoneOffchain`: 5
-  - `_maxStoneOnchain`: 3
--->
+- Deployed code: [MultiGomoku.sol](https://github.com/celer-network/cApps-eth/blob/88391d4953/contracts/gomoku/MultiGomoku.sol)
 
 ## External API
 
 #### API required by [CelerChannel](https://github.com/celer-network/cChannel-eth)
 
-- [App with Boolean Outcome](https://github.com/celer-network/cApps/blob/master/contracts/templates/IBooleanOutcome.sol)
+- [App with Boolean Outcome](https://github.com/celer-network/cApps-eth/blob/master/contracts/templates/IBooleanOutcome.sol)
 
-- [App with Numeric Outcome](https://github.com/celer-network/cApps/blob/master/contracts/templates/INumericOutcome.sol)
+- [App with Numeric Outcome](https://github.com/celer-network/cApps-eth/blob/master/contracts/templates/INumericOutcome.sol)
 
 #### API required by [CelerX](https://celerx.app/).
 
-- [Multi-session Apps](https://github.com/celer-network/cApps/blob/master/contracts/templates/IMultiSession.sol)
+- [Multi-session Apps](https://github.com/celer-network/cApps-eth/blob/master/contracts/templates/IMultiSession.sol)
 
-
-- [Single-session Apps](https://github.com/celer-network/cApps/blob/master/contracts/templates/ISingleSession.sol)
+- [Single-session Apps](https://github.com/celer-network/cApps-eth/blob/master/contracts/templates/ISingleSession.sol)
 
 
 ## Template Interface
 
-We provide [templates](https://github.com/celer-network/cApps/tree/master/contracts/templates) to implement the common state-channel logics of external APIs, so that the developers can focus on the app-specific logic.
+We provide [templates](https://github.com/celer-network/cApps-eth/tree/master/contracts/templates) to implement the common state-channel logics of external APIs, so that the developers can focus on the app-specific logic.
 
-Developers using the provided templates **only need to implement the following interfaces**. For detailed usages, please refer to these [simplest example contracts](https://github.com/celer-network/cApps/tree/master/contracts/simple-app) and [tests](https://github.com/celer-network/cApps/tree/master/test/simple-app)
+Developers using the provided templates **only need to implement the following interfaces**. For detailed usages, please refer to these [simplest example contracts](https://github.com/celer-network/cApps-eth/tree/master/contracts/simple-app) and [tests](https://github.com/celer-network/cApps-eth/tree/master/test/simple-app)
 
 #### MultiSessionApp template interface
 
