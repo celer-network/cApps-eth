@@ -14,7 +14,7 @@ This repo provides templates and examples for developing the on-chain contract p
 ### Ropsten Testnet
 
 #### MultiGomoku
-- Contract address: [0xa5cb3fcb9fc2c7a285615455735530ed0d1dfeb6](https://ropsten.etherscan.io/address/0xb352b23620ab8d75a05012aec0e0f5ce1015d743)
+- Contract address: [0xa5cb3fcb9fc2c7a285615455735530ed0d1dfeb6](https://ropsten.etherscan.io/address/0xa5cb3fcb9fc2c7a285615455735530ed0d1dfeb6)
 - Constructor: minStoneOffchain=5， maxStoneOnchain=3
 - Deployed code: [MultiGomoku.sol](https://github.com/celer-network/cApps-eth/blob/3064786217/contracts/gomoku/MultiGomoku.sol)
 
