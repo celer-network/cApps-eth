@@ -3,17 +3,23 @@ import "../templates/MultiSessionBooleanOutcome.sol";
 
 contract MultiGomoku is MultiSessionBooleanOutcome {
 
-    enum StateKey {Turn, Winner, FullState}
+    enum StateKey {TurnColor, WinnerColor, FullState}
 
+    uint8 constant BLACK = 1;
+    uint8 constant WHITE = 2;
     uint8 constant BOARD_DIMENSION = 15; // board dimension is 15x15
+    uint constant STATE_LENGTH = 228; // length of board state
 
     uint8 public minStoneOffchain; // minimal number of stones before go onchain
     uint8 public maxStoneOnchain;  // maximal number of stones after go onchain
 
     struct GameInfo {
-        bytes boardState;       // 227 bytes: uint8 winner + uint8 turn + 15x15 bytes board
-        uint16 stoneNum;        // number of stones
-        uint16 stoneNumOnchain; // number of stones placed on-chain
+        // 228 bytes: uint8 winner color + uint8 turn color + uint8 black id + 15x15 bytes board
+        bytes boardState;
+        // number of stones
+        uint16 stoneNum;
+        // number of stones placed on-chain
+        uint16 stoneNumOnchain;
     }
 
     mapping(bytes32 => GameInfo) private gameInfoMap; // session id -> game info
@@ -42,15 +48,15 @@ contract MultiGomoku is MultiSessionBooleanOutcome {
     /**
      * @notice Get app state
      * @param _session App session ID
-     * @param _key Query key, 0:Turn, 1:Winner, 2:FullState
-     * @return App session state: Turn (1 byte), Winner (1 byte), FllState (227 bytes)
+     * @param _key Query key, 0:TurnColor, 1:WinnerColor, 2:FullState
+     * @return App session state: TurnColor (1 byte), WinnerColor (1 byte), FllState (228 bytes)
      */
     function getState(bytes32 _session, uint _key) external view returns (bytes memory) {
-        if (_key == uint(StateKey.Winner)) {
+        if (_key == uint(StateKey.WinnerColor)) {
             bytes memory b = new bytes(1);
             b[0] = gameInfoMap[_session].boardState[0];
             return b;
-        } else if (_key == uint(StateKey.Turn)) {
+        } else if (_key == uint(StateKey.TurnColor)) {
             bytes memory b = new bytes(1);
             b[0] = gameInfoMap[_session].boardState[1];
             return b;
@@ -67,18 +73,18 @@ contract MultiGomoku is MultiSessionBooleanOutcome {
         internal
         returns (bool)
     {
-        // uint8 winner + uint8 turn + 15x15 bytes board
-        require(_state.length == 227, "invalid state length");
+        // uint8 winner color + uint8 turn color + uint8 black id + 15x15 bytes board
+        require(_state.length == STATE_LENGTH, "invalid state length");
         GameInfo storage game = gameInfoMap[_session];
         if (game.boardState.length == 0) {
-            game.boardState = new bytes(227);
+            game.boardState = new bytes(STATE_LENGTH);
         }
         if(uint8(_state[0]) != 0) {
             winGame(_session, uint8(_state[0]));
         } else {
-            // load other states only if winner is not specified
+            // load other states only if winner color is not BLACK or WHITE
             uint count = 0;
-            for (uint i = 2; i < 227; i++) {
+            for (uint i = 3; i < STATE_LENGTH; i++) {
                 if (uint8(_state[i]) != 0) {
                     count++;
                 }
@@ -100,8 +106,16 @@ contract MultiGomoku is MultiSessionBooleanOutcome {
         internal
         returns (bool)
     {
-        uint8 turn = uint8(gameInfoMap[_session].boardState[1]);
-        require(msg.sender == sessionInfoMap[_session].players[turn-1], "Not your turn");
+        uint8 turnColor = getTurnColor(_session);
+        // black player index, smaller (=1) or larger (=2) addr
+        uint8 blackID = getBlackPlayerID(_session);
+        if(blackID == 1) {
+            require(msg.sender == sessionInfoMap[_session].players[turnColor-1], "Not your turn");
+        } else if(blackID == 2) {
+            require(msg.sender == sessionInfoMap[_session].players[2-turnColor], "Not your turn");
+        } else {
+            assert(false);
+        }
         require(_action.length == 2, "invalid action length");
         uint8 x = uint8(_action[0]);
         uint8 y = uint8(_action[1]);
@@ -111,7 +125,7 @@ contract MultiGomoku is MultiSessionBooleanOutcome {
         require(uint8(game.boardState[index]) == 0, "slot is occupied");
 
         // place the stone
-        game.boardState[index] = byte(turn);
+        game.boardState[index] = byte(turnColor);
         game.stoneNum++;
         game.stoneNumOnchain++;
         bytes memory board = game.boardState;
@@ -121,20 +135,20 @@ contract MultiGomoku is MultiSessionBooleanOutcome {
             checkFive(board, x, y, 0, 1) ||  // vertical bidirection
             checkFive(board, x, y, 1, 1) ||  // main-diagonal bidirection
             checkFive(board, x, y, 1, -1)) { // anti-diagonal bidirection
-            winGame(_session, turn); // we have a winner
+            winGame(_session, turnColor); // we have a winner
             return true;
         }
 
         if (game.stoneNum == 225 || game.stoneNumOnchain > maxStoneOnchain) {
             // all slots occupied, game is over with no winner
             sessionInfoMap[_session].status = SessionStatus.FINALIZED;
-            setTurn(_session, 0);
+            setTurnColor(_session, 0);
         } else {
             // toggle turn and update game phase
-            if (turn == 1) {
-                setTurn(_session, 2);
+            if (turnColor == BLACK) {
+                setTurnColor(_session, WHITE);
             } else {
-                setTurn(_session, 1);
+                setTurnColor(_session, BLACK);
             }
         }
         return true;
@@ -145,10 +159,10 @@ contract MultiGomoku is MultiSessionBooleanOutcome {
      * @param _session Session ID
      */
     function finalizeOnTimeout(bytes32 _session) internal  {
-        if (uint8(gameInfoMap[_session].boardState[1]) == 1) {
-            winGame(_session, 2);
-        } else if (uint8(gameInfoMap[_session].boardState[1]) == 2) {
-            winGame(_session, 1);
+        if (getTurnColor(_session) == BLACK) {
+            winGame(_session, WHITE);
+        } else if (getTurnColor(_session) == WHITE) {
+            winGame(_session, BLACK);
         }
     }
 
@@ -216,7 +230,7 @@ contract MultiGomoku is MultiSessionBooleanOutcome {
      * @return index of the state
      */
     function stateIndex(uint8 _x, uint8 _y) private pure returns (uint) {
-        return 2 + BOARD_DIMENSION * _x + _y;
+        return 3 + BOARD_DIMENSION * _x + _y;
     }
 
     /**
@@ -224,19 +238,27 @@ contract MultiGomoku is MultiSessionBooleanOutcome {
      */
     function winGame(bytes32 _session, uint8 _winner) private {
         require(0 <= _winner && _winner <= 2, "invalid winner state");
-        setWinner(_session, _winner);
+        setWinnerColor(_session, _winner);
         // Game over
         if (_winner != 0) {
-            setTurn(_session, 0);
+            setTurnColor(_session, 0);
             sessionInfoMap[_session].status = SessionStatus.FINALIZED;
         }
     }
 
-    function setWinner(bytes32 _session, uint8 _winner) private {
+    function setWinnerColor(bytes32 _session, uint8 _winner) private {
         gameInfoMap[_session].boardState[0] = byte(_winner);
     }
 
-    function setTurn(bytes32 _session, uint8 _turn) private {
-        gameInfoMap[_session].boardState[1] = byte(_turn);
+    function setTurnColor(bytes32 _session, uint8 _turnColor) private {
+        gameInfoMap[_session].boardState[1] = byte(_turnColor);
+    }
+
+    function getTurnColor(bytes32 _session) private view returns (uint8){
+        return uint8(gameInfoMap[_session].boardState[1]);
+    }
+
+    function getBlackPlayerID(bytes32 _session) private view returns (uint8){
+        return uint8(gameInfoMap[_session].boardState[2]);
     }
 }

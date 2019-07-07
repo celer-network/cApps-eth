@@ -8,15 +8,21 @@ This repo provides templates and examples for developing the on-chain contract p
 
 - **Single-Session App:** mostly used as a one-time virtual contract for fixed players without initial deployment. The player who wants to bring the off-chain game to on-chain dispute needs first to deploy the contract.
 
-
 ## Latest Deployments
 
 ### Ropsten Testnet
 
 #### MultiGomoku
-- Contract address: [0xa5cb3fcb9fc2c7a285615455735530ed0d1dfeb6](https://ropsten.etherscan.io/address/0xa5cb3fcb9fc2c7a285615455735530ed0d1dfeb6)
+
+- Contract address: [0xb753e7bfc74bdd669bbf8075637f6e9a1f575c4c](https://ropsten.etherscan.io/address/0xb753e7bfc74bdd669bbf8075637f6e9a1f575c4c)
 - Constructor: minStoneOffchain=5， maxStoneOnchain=3
-- Deployed code: [MultiGomoku.sol](https://github.com/celer-network/cApps-eth/blob/3064786217/contracts/gomoku/MultiGomoku.sol)
+
+### Mainnet
+
+#### MultiGomoku
+
+- Contract address: [0xa48c84f8b1926688209f45bce4525e26a2a45592](https://etherscan.io/address/0xa48c84f8b1926688209f45bce4525e26a2a45592)
+- Constructor: minStoneOffchain=5， maxStoneOnchain=3
 
 ## External API
 
@@ -31,7 +37,6 @@ This repo provides templates and examples for developing the on-chain contract p
 - [Multi-session Apps](https://github.com/celer-network/cApps-eth/blob/master/contracts/templates/IMultiSession.sol)
 
 - [Single-session Apps](https://github.com/celer-network/cApps-eth/blob/master/contracts/templates/ISingleSession.sol)
-
 
 ## Template Interface
 
