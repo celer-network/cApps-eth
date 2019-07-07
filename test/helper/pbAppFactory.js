@@ -15,6 +15,7 @@ async function encodeStateProof (nonce, seqNum, state, timeout, players) {
   const appStateBuffer = pbApp.AppState.encode(appStateMsg).finish();
   const appStateHash = web3.utils.keccak256(appStateBuffer);
 
+  players.sort()
   const sigs = await Promise.all(
     players.map(async player => {
       const sig = await web3.eth.sign(appStateHash, player);
