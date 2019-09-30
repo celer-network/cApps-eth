@@ -2,7 +2,7 @@
 
 Celer dApps are highly interactive, secure and low-cost state-channel applications running on [Celer Network](https://www.celer.network) together with Celer [generic payment channel](https://github.com/celer-network/cChannel-eth).
 
-This repo provides templates and examples for developing the on-chain contract parts of dApps that can smoothly run on Celer mobile and web SDK [CelerX](https://celerx.app/). Note that most of the app nteractions happen off-chain. On-chain operations are only needed when players cannot reach consensus off-chain and want to dispute.
+This repo provides templates and examples for developing the on-chain contract parts of dApps that can smoothly run on Celer mobile and web SDK [CelerX](https://celerx.app/). Note that most of the app interactions happen off-chain. On-chain operations are only needed when players cannot reach consensus off-chain and want to dispute.
 
 - **Multi-Session App:** initially deployed once by the developer and can be repeatedly shared by all players. No additional code needs to be deployed when players want to dispute on-chain.
 
